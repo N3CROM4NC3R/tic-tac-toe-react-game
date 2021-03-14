@@ -3,35 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 
-//First react component
-/* class Square extends React.Component {
-
-    constructor(props){
-        super(props);
-
-        //this.state = {
-        //  value:null,
-        //};
-    
-    }
-
-
-    render() {
-      
-
-      return (
-        //When We call setState method, We are telling to React that renders this component again, with the new value of the state.
-        //Note: When We call this method, also, the child components render themself again 
-        <button className="square" onClick={() => {this.props.onClick()}} >
-          {/*Then, we call again the this.state.value "*\/"}
-          {this.props.value}
-        </button>
-      );
-    }
-  }
-
-*/
-
   //This is a component function, this is the best way of make a component that just have a render method
   //This is the component shorthand, now, do this have a state attribute?
 
@@ -55,28 +26,6 @@ import './index.css';
   //Second react component
   class Board extends React.Component {
 
-   /*  handleClick(value){
-      //this.setState({squares[value]:"x"});
-      //alert("Hello");
-
-      const squares = this.state.squares.slice();
-
-      //If it have a winner or the square is filled then
-      if(calculateWinner(squares) || squares[value]){
-        return ;
-      }
-
-      squares[value] = this.state.xIsNext ? "X" : "O";
-      this.props.onClick(squares);
-      //We change te turn of the game tic tac
-
-      this.setState({
-        squares,
-        xIsNext:!this.state.xIsNext
-      });
-    } */
-
-
     renderSquare(i) {
       
       //We are passing the value of this array to the props of this Square.
@@ -90,28 +39,36 @@ import './index.css';
               />;
     
     }
-  
+
+    //Render all squares with 2 for loops
+    renderSquares(){
+      let squaresDes = [];
+      let squareElements = [];
+      
+      for(let i=0; i<3; i++){
+        
+        for(let a=0; a<3; a++){
+          //This is for the number follow the next sequence: index=0,1,2,3,4,...,8
+          let index = (i*3) +a;
+          squareElements.push(this.renderSquare( index));
+        }
+
+      squaresDes.push(<div className="board-row">{squareElements}</div>)
+      squareElements = [];
+      }
+
+      return squaresDes;
+
+    }
+
+
     render() {
 
       
       return (
         <div className="board">
           <div className="status">{this.props.status}</div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+          {this.renderSquares()}
         </div>
       );
     }
@@ -126,11 +83,13 @@ import './index.css';
       this.state = {
 
         history:[{
-          squares:Array(9).fill(null)
+          squares:Array(9).fill(null),
+          lastRow:null,
+          lastCol:null,
         }],
         stepNumber : 0,
-        xIsNext:true
-      
+        xIsNext:true,
+        descOrder:false,
       };
     }
     //This is for handle the click from the game, this method make all
@@ -152,11 +111,14 @@ import './index.css';
       this.setState({
         history : history.concat([
           {
-            squares
+            squares,
+            lastRow: parseInt(i/3) + 1,
+            lastCol: (i%3) + 1
           }
         ]),
         xIsNext : !this.state.xIsNext,
-        stepNumber : history.length
+        stepNumber : history.length,
+        
       });
     }
 
@@ -169,6 +131,16 @@ import './index.css';
 
     }
 
+    changeOrder(){
+      
+      this.setState({
+        history:this.state.history,
+        stepNumber:this.state.stepNumber,
+        xIsNext:this.state.xIsNext,
+        descOrder:!this.state.descOrder,
+      });
+    }
+
     render() {
 
       const history = this.state.history.slice();
@@ -176,22 +148,35 @@ import './index.css';
 
       let current = history[this.state.stepNumber];
 
-      console.log(this.state.stepNumber);
-      
       const winner = calculateWinner(current.squares);
 
-      const moves = history.map((squares, move) => {
+      //This is a StepButton component Array
+      const moves = history.map((step, move) => {
         
-        const desc = move ?
-          'Go to move #' + move :
-          'Go to game start';
-        return (
-          <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          </li>
-        );
+        return <StepButton 
+          step={step} 
+          move={move}
+          moveSelected = {this.state.stepNumber} 
+          onClick={()=>this.jumpTo(move)}
+        />;
+      
       });
 
+      //If the user chosse "Change order", then, we should change the order of the StepButton component Array
+     /*  if(this.state.descOrder==true){
+        
+        //To change the order
+        for(let i = 0;i < moves.length; i++){
+          let aux = moves[i];
+          
+          moves[i] = moves[moves.length-1-i];
+          moves[moves.length-1-i] = aux;
+            
+        }
+      } */
+      if(this.state.descOrder){
+        moves.reverse();
+      }
 
       let status;
       
@@ -205,7 +190,8 @@ import './index.css';
       
       }
 
-
+      let orderIconClassName = (this.state.descOrder?"fa fa-angle-down":"fa fa-angle-up");
+      
 
       return (
         <div className="game">
@@ -218,15 +204,41 @@ import './index.css';
               status = {status}
             />
           </div>
+          
           <div className="game-info">
-            <div>{/* status */}</div>
+            <button className="order-button" onClick={()=>{this.changeOrder()}}><i className={orderIconClassName}></i> Change order</button>
             <ol>{moves}</ol>
           </div>
+          
         </div>
       );
     }
   }
   
+
+
+  function StepButton(props){
+    
+    let row = props.step.lastRow;
+    
+    let col = props.step.lastCol;
+
+    let moveSelected = props.moveSelected;
+
+    const desc = props.move ?
+      'Go to move #' + props.move + ` ( ${row}, ${col})`:
+      'Go to game start';
+
+    let className = moveSelected === props.move ? "step-selected" : "";
+
+    return (
+      <li key={props.move}>
+        <button className={className} onClick={() => props.onClick()}>{desc}</button>
+      </li>
+    );
+
+
+  }
 
 
   // ========================================

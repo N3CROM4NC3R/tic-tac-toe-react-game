@@ -1,11 +1,13 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
+    font: 14px 'DotGothic16', Futura, sans-serif;
+  
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height:100vh;
+    background-color:#0a043c;
+    color:#FFFFFF;
   }
 
   
@@ -21,11 +23,15 @@ body {
   
   .status {
     margin-bottom: 10px;
+    text-align:center;
+    font-size:20px;
+    
   }
   
   .square {
-    background: #fff;
-    border: 1px solid #999;
+    background: #03506f;
+    border: 1px solid #03719c;
+    color:#FFFFFF;
     float: left;
     font-size: 24px;
     font-weight: bold;
@@ -49,9 +55,54 @@ body {
   .game {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
   .game-info {
     margin-left: 20px;
   }
+
+  .game-info ol{
+    list-style: none;
+    overflow-y: scroll;
+    height:180px;
+    margin-top:30px;
+    padding:5px;
+  }
+  .step-selected{
+    font-weight: bold;
+
+
+  }
+  /* To make styles for the scrollbar */
+/* 
+  .game-info ol::-webkit-scrollbar-thumb{
+    background-color:#FFF;
+  }
+
   
+  .game-info ol::-webkit-scrollbar-track{
+    background-color:#000;
+  } */
+  
+  .game-info ol li{
+    margin:5px 0;
+  }
+
+  .game-info ol li button{
+    background-color:#03506f;
+    color:#FFFFFF;
+    border-radius:3px;
+    padding:5px;
+    border:0;
+    font-family:"DotGothic16";
+  }
+  .order-button{
+    background-color:#03506f;
+    color:#FFFFFF;
+    border-radius:30x;
+    padding:5px;
+    border:0;
+    font-family:"DotGothic16";
+  } 
