@@ -7,10 +7,16 @@ import './index.css';
   //This is the component shorthand, now, do this have a state attribute?
 
   function Square(props){
+    let squareClassName = "square "
     
+    if(props.winnerObject){
+      squareClassName += props.winnerObject.indexes.includes(props.index)?"hightlight-square":"";
+    }
+
+
     return (
       <button 
-        className = "square" 
+        className = {squareClassName} 
         
         onClick = {() => {props.onClick()}}
       >
@@ -35,7 +41,8 @@ import './index.css';
       return <Square 
                 value = {this.props.squares[i]} 
                 onClick = {()=>{this.props.onClick(i)}}
-              
+                winnerObject = {this.props.winnerObject}
+                index = {i}
               />;
     
     }
@@ -50,7 +57,7 @@ import './index.css';
         for(let a=0; a<3; a++){
           //This is for the number follow the next sequence: index=0,1,2,3,4,...,8
           let index = (i*3) +a;
-          squareElements.push(this.renderSquare( index));
+          squareElements.push(this.renderSquare(index));
         }
 
       squaresDes.push(<div className="board-row">{squareElements}</div>)
@@ -148,7 +155,7 @@ import './index.css';
 
       let current = history[this.state.stepNumber];
 
-      const winner = calculateWinner(current.squares);
+      const winnerObject = calculateWinner(current.squares);
 
       //This is a StepButton component Array
       const moves = history.map((step, move) => {
@@ -179,10 +186,9 @@ import './index.css';
       }
 
       let status;
+      if(winnerObject){
       
-      if(winner){
-      
-        status = 'The winner is: '+ (winner);
+        status = 'The winner is: '+ (winnerObject.winner);
       
       }else{
       
@@ -201,6 +207,8 @@ import './index.css';
               
               onClick = {(i)=>this.handleClick(i)}
               
+              winnerObject={winnerObject}
+
               status = {status}
             />
           </div>
@@ -262,7 +270,10 @@ import './index.css';
       const [a, b, c] = lines[i];
       //If the line have in each index the same player, then, that player will be winner
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
+        return {
+          winner:squares[a],
+          indexes:[a,b,c]
+        };
       }
     }
     return null;

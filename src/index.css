@@ -1,6 +1,5 @@
 body {
     font: 14px 'DotGothic16', Futura, sans-serif;
-  
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -48,6 +47,12 @@ body {
     outline: none;
   }
   
+  .hightlight-square{
+    
+    background-color:#FFFFFF;
+    color:#000000;
+  }
+
   .kbd-navigation .square:focus {
     background: #ddd;
   }
@@ -61,14 +66,15 @@ body {
   
   .game-info {
     margin-left: 20px;
+    padding:5px;
   }
 
   .game-info ol{
     list-style: none;
     overflow-y: scroll;
     height:180px;
-    margin-top:30px;
     padding:5px;
+    
   }
   .step-selected{
     font-weight: bold;
@@ -106,3 +112,4 @@ body {
     border:0;
     font-family:"DotGothic16";
   } 
+
