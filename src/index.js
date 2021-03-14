@@ -190,11 +190,16 @@ import './index.css';
       
         status = 'The winner is: '+ (winnerObject.winner);
       
-      }else{
+      }else if(this.state.stepNumber === 9){
+        status = "This is a draw";
+
+      }
+      else{
       
         status = 'Next player: '+ (this.state.xIsNext?"X":"O");
       
       }
+
 
       let orderIconClassName = (this.state.descOrder?"fa fa-angle-down":"fa fa-angle-up");
       
