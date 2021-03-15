@@ -8,19 +8,21 @@ import './index.css';
 
   function Square(props){
     let squareClassName = "square "
-    
-    if(props.winnerObject){
-      squareClassName += props.winnerObject.indexes.includes(props.index)?"hightlight-square":"";
+    let winnerObject = props.winnerObject.slice();
+    if(winnerObject){
+      
+      squareClassName += winnerObject.indexes.includes(props.index)?"hightlight-square":"";
     }
 
 
     return (
       <button 
         className = {squareClassName} 
-        
         onClick = {() => {props.onClick()}}
       >
+
         {props.value}
+      
       </button>
 
     );
@@ -29,7 +31,6 @@ import './index.css';
 
 
 
-  //Second react component
   class Board extends React.Component {
 
     renderSquare(i) {
@@ -169,18 +170,6 @@ import './index.css';
       
       });
 
-      //If the user chosse "Change order", then, we should change the order of the StepButton component Array
-     /*  if(this.state.descOrder==true){
-        
-        //To change the order
-        for(let i = 0;i < moves.length; i++){
-          let aux = moves[i];
-          
-          moves[i] = moves[moves.length-1-i];
-          moves[moves.length-1-i] = aux;
-            
-        }
-      } */
       if(this.state.descOrder){
         moves.reverse();
       }
@@ -219,7 +208,12 @@ import './index.css';
           </div>
           
           <div className="game-info">
-            <button className="order-button" onClick={()=>{this.changeOrder()}}><i className={orderIconClassName}></i> Change order</button>
+            <button 
+              className="order-button" 
+              onClick={()=>this.changeOrder()}
+            >
+              <i className={orderIconClassName}></i> Change order
+            </button>
             <ol>{moves}</ol>
           </div>
           
@@ -239,14 +233,19 @@ import './index.css';
     let moveSelected = props.moveSelected;
 
     const desc = props.move ?
-      'Go to move #' + props.move + ` ( ${row}, ${col})`:
+      'Go to move #' + props.move + `(${row}, ${col})`:
       'Go to game start';
 
     let className = moveSelected === props.move ? "step-selected" : "";
 
     return (
       <li key={props.move}>
-        <button className={className} onClick={() => props.onClick()}>{desc}</button>
+        <button 
+          className={className} 
+          onClick={() => props.onClick()}
+        >
+          {desc}
+        </button>
       </li>
     );
 
